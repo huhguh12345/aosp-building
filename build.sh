@@ -12,6 +12,8 @@ function tg_sendFile() {
 curl -F chat_id=$CHAT_ID -F document=@${1} -F parse_mode=markdown https://api.telegram.org/bot$BOT_TOKEN/sendDocument
 }
 
+BUILD_START=$(date +"%s");
+
 mkdir -p ~/.config/rclone
 echo "$rclone_config" > ~/.config/rclone/rclone.conf
 mkdir -p ~/.ssh
@@ -79,4 +81,8 @@ tg_sendFile "build.txt"
 #tar --use-compress-program="pigz -k -1 " -cf corvus_ccache.tar.gz ccache
 #rclone copy corvus_ccache.tar.gz aosp: -P
 
-tg_sendText "All tasks finished"
+BUILD_END=$(date +"%s");
+DIFF=$(($BUILD_END - $BUILD_START));
+
+
+tg_sendText "Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
