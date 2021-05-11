@@ -18,7 +18,7 @@ cd /tmp/rom # Depends on where source got synced
 git clone https://github.com/Gabriel260/android_hardware_samsung-2 hardware/samsung
 git clone https://github.com/geckyn/android_kernel_samsung_exynos7885 kernel/samsung/exynos7885 --depth=1
 
-sleep 10s
+sleep 10
 
 tg_sendText "Lunching"
 # Normal build steps
