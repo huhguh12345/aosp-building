@@ -6,7 +6,7 @@ env: # Environment variables to pass to all tasks
     # ENCRYPTED variables is unique for every repository, so you cant use my one, create you rclone config https://rclone.org/drive/#making-your-own-client-id
     # CHAT_ID and BOT_TOKEN are used by telegram functions. I don't want you to control my bot xD
     rclone_config: "ENCRYPTED[413ed0c4cad4ce68e9a5ff1efceb6e36950b186730b5b13be7a777d27322bb1a214229c8df797179fb37dc6cd8db9429]"
-    CHAT_ID: "-599685409"
+    CHAT_ID: "-100599685409"
     BOT_TOKEN: "ENCRYPTED[6e56bd2c2cb5f96f8e9e159b2683d86ad78bc44074acc029e7329976cd8457152d61b28a65b9b63856d816db143ec0c4]"
     
     # Github variables needed so as to be able to clone private repos too without authenticating. Useful for building official roms which have private repos. The first 3 variables needs to be encrypted!! You can hide your email and username by encrypting them too if you want but that's not neccessary.
