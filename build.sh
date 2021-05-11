@@ -14,9 +14,9 @@ curl -F chat_id=$CHAT_ID -F document=@${1} -F parse_mode=markdown https://api.te
 
 tg_send_Text "Downloading ccache"
 cd /tmp
-rclone copy aosp:ccache3.tar.gz /tmp/
-tar xf ccache3.tar.gz
-rm -f ccache3.tar.gz
+rclone copy aosp:corvus_ccache.tar.gz /tmp/
+tar xf corvus_ccache.tar.gz
+rm -f corvus_ccache.tar.gz
 
 mkdir -p ~/.config/rclone
 echo "$rclone_config" > ~/.config/rclone/rclone.conf
@@ -44,6 +44,13 @@ git clone https://github.com/geckyn/android_kernel_samsung_exynos7885 kernel/sam
 git clone https://github.com/Gabriel260/android_device_samsung_a10-common -b corvus device/samsung
 git clone https://github.com/Gabriel260/proprietary_vendor_samsung_a10-common vendor/samsung
 
+# Prebuilt kernel patch
+tg_sendText "Applying Patches"
+cd vendor/corvus
+git remote add k https://github.com/crdroidandroid/android_vendor_crdroid
+git fetch k
+git cherry-pick ef2ec82665c547bd9e6b05a45dbb2cc4fc1b06b4
+cd -
 
 tg_sendText "Lunching"
 # Normal build steps
@@ -61,15 +68,15 @@ tg_sendText "Starting Compilation.."
 mka bacon -j10 | tee build.txt
 
 tg_sendText "Build completed! Uploading rom to gdrive"
-rclone copy out/target/product/a10/*Corvus* aosp:final -P || rclone copy out/target/product/a10/*a10*.zip aosp:final -P
+rclone copy out/target/product/a10/*Unofficial* aosp:final -P || rclone copy out/target/product/a10/*Alpha*.zip aosp:final -P
 
 (ccache -s && echo " " && free -h && echo " " && df -h && echo " " && ls -a out/target/product/a10/) | tee final_monitor.txt
 tg_sendFile "final_monitor.txt"
 tg_sendFile "build.txt"
 
-tg_sendText "Uploading new ccache to gdrive"
-cd /tmp
-tar --use-compress-program="pigz -k -1 " -cf corvus_ccache.tar.gz ccache
-rclone copy corvus_ccache.tar.gz aosp: -P
+#tg_sendText "Uploading new ccache to gdrive"
+#cd /tmp
+#tar --use-compress-program="pigz -k -1 " -cf corvus_ccache.tar.gz ccache
+#rclone copy corvus_ccache.tar.gz aosp: -P
 
 tg_sendText "All tasks finished"
