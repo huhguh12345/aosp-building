@@ -12,12 +12,6 @@ function tg_sendFile() {
 curl -F chat_id=$CHAT_ID -F document=@${1} -F parse_mode=markdown https://api.telegram.org/bot$BOT_TOKEN/sendDocument
 }
 
-tg_send_Text "Downloading ccache"
-cd /tmp
-rclone copy aosp:corvus_ccache.tar.gz /tmp/
-tar xf corvus_ccache.tar.gz
-rm -f corvus_ccache.tar.gz
-
 mkdir -p ~/.config/rclone
 echo "$rclone_config" > ~/.config/rclone/rclone.conf
 mkdir -p ~/.ssh
@@ -31,6 +25,12 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 echo "$known_hosts" > ~/.ssh/known_hosts
 echo "$user_credentials" > ~/.git-credentials && git config --global credential.helper store
+
+tg_send_Text "Downloading ccache"
+cd /tmp
+rclone copy aosp:corvus_ccache.tar.gz /tmp/
+tar xf corvus_ccache.tar.gz
+rm -f corvus_ccache.tar.gz
 
 tg_sendText "Syncing rom"
 mkdir -p /tmp/rom
