@@ -94,29 +94,23 @@ DIFF=$(($PATCHES_END - $PATCHES_START));
 tg_sendText "patches applied in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 }
 
-lunch() {
-tg_sendText "Lunching"
-# Normal build steps
-. build/envsetup.sh
-mkdir -p /tmp/ccache
-export CCACHE_DIR=/tmp/ccache
-export CCACHE_EXEC=$(which ccache)
-export USE_CCACHE=1
-ccache -M 20G
-ccache -o compression=true
-ccache -z
-lunch corvus_a10-userdebug
-}
-
 tmate() {
 tmate -S /tmp/tmate.sock new-session -d && tmate -S /tmp/tmate.sock wait tmate-ready && send_shell=$(tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}') && tg_sendText "$send_shell" &>/dev/null && sleep 2h
 }
 
 build() {
 tg_sendText "Starting Compilation..."
-echo "mka bacon -j10 | tee build.txt" > build2.sh
+echo "export CCACHE_DIR=/tmp/ccache" >> build2.sh
+echo "export CCACHE_EXEC=$(which ccache)" >> build2.sh
+echo "export USE_CCACHE=1" >> build2.sh
+echo "ccache -M 20G" >> build2.sh
+echo "ccache -o compression=true" >> build2.sh
+echo "ccache -z" >> build2.sh
+echo "source ./build/envsetup.sh" >> build2.sh
+echo "lunch corvus_a10-userdebug" >> build2.sh
+echo "mka bacon -j10 | tee build.txt" >> build2.sh
 chmod 0777 build2.sh
-timeout 105m ./build2.sh
+timeout --preserve-status 105m ./build2.sh
 }
 
 uprom() {
@@ -149,7 +143,6 @@ start
 sync
 trees
 patches
-lunch
 # tmate
 build
 uprom
