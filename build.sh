@@ -49,7 +49,7 @@ tg_sendText "G: Syncing rom"
 mkdir -p /tmp/rom
 cd /tmp/rom
 repo init --no-repo-verify --depth=1 -u https://github.com/Corvus-R/android_manifest.git -b 11 -g default,-device,-mips,-darwin,-notdefault
-repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j22 || repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j30
+repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j16 || repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j30
 SYNC_END=$(date +"%s");
 DIFF=$(($SYNC_END - $SYNC_START));
 tg_sendText "G: Sync completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
