@@ -32,7 +32,7 @@ echo "$user_credentials" > ~/.git-credentials && git config --global credential.
 }
 
 dlccache() {
-tg_sendText "Downloading ccache"
+tg_sendText "G: Downloading ccache"
 DLCCACHE_START=$(date +"%s");
 cd /tmp
 rclone copy aosp:$CCACHE_NAME /tmp/
@@ -40,37 +40,37 @@ tar xf $CCACHE_NAME
 rm -f $CCACHE_NAME
 DLCCACHE_END=$(date +"%s");
 DIFF=$(($DLCCACHE_END - $DLCCACHE_START));
-tg_sendText "ccache downloaded in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+tg_sendText "G: ccache downloaded in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 }
 
 sync() {
 SYNC_START=$(date +"%s");
-tg_sendText "Syncing rom"
+tg_sendText "G: Syncing rom"
 mkdir -p /tmp/rom
 cd /tmp/rom
 repo init --no-repo-verify --depth=1 -u https://github.com/Corvus-R/android_manifest.git -b 11 -g default,-device,-mips,-darwin,-notdefault
 repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j22 || repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j30
 SYNC_END=$(date +"%s");
 DIFF=$(($SYNC_END - $SYNC_START));
-tg_sendText "Sync completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+tg_sendText "G: Sync completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 }
 
 trees() {
 TREES_START=$(date +"%s");
-tg_sendText "Downloading trees"
+tg_sendText "G: Downloading trees"
 git clone https://github.com/Gabriel260/android_hardware_samsung-2 hardware/samsung
 # git clone https://github.com/geckyn/android_kernel_samsung_exynos7885 kernel/samsung/exynos7885 --depth=1
 git clone https://github.com/eurekadevelopment/android_device_samsung -b corvus-arm64 device/samsung
 git clone https://github.com/eurekadevelopment/proprietary_vendor_samsung -b lineage-18.1-arm64 vendor/samsung
 TREES_END=$(date +"%s");
 DIFF=$(($TREES_END - $TREES_START));
-tg_sendText "trees downloaded in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+tg_sendText "G: trees downloaded in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 }
 
 # Prebuilt kernel patch
 patches() {
 PATCHES_START=$(date +"%s");
-tg_sendText "Applying Patches"
+tg_sendText "G: Applying Patches"
 # cd vendor/corvus
 # git remote add k https://github.com/crdroidandroid/android_vendor_crdroid
 # git fetch k
@@ -91,7 +91,7 @@ rm -rf packages/inputmethods/LatinIME
 git clone https://github.com/LineageOS/android_packages_inputmethods_LatinIME packages/inputmethods/LatinIME --depth=1
 PATCHES_END=$(date +"%s");
 DIFF=$(($PATCHES_END - $PATCHES_START));
-tg_sendText "patches applied in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+tg_sendText "G: patches applied in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 }
 
 tmate() {
@@ -99,7 +99,7 @@ tmate -S /tmp/tmate.sock new-session -d && tmate -S /tmp/tmate.sock wait tmate-r
 }
 
 timeoutbuild() {
-tg_sendText "Starting Compilation..."
+tg_sendText "G: Starting Compilation..."
 echo "export CCACHE_DIR=/tmp/ccache" >> build2.sh
 echo "export CCACHE_EXEC=$(which ccache)" >> build2.sh
 echo "export USE_CCACHE=1" >> build2.sh
@@ -114,7 +114,7 @@ timeout --preserve-status 100m ./build2.sh
 }
 
 build() {
-tg_sendText "Starting Compilation..."
+tg_sendText "G: Starting Compilation..."
 . build/envsetup.sh
 export CCACHE_DIR=/tmp/ccache
 export CCACHE_EXEC=$(which ccache)
@@ -127,7 +127,7 @@ timeout --preserve-status 100m mka bacon -j10 | tee build.txt
 }
 
 uprom() {
-tg_sendText "Build completed! Uploading rom to gdrive"
+tg_sendText "G: Build completed! Uploading rom to gdrive"
 rclone copy out/target/product/a10/*Unofficial*.zip aosp:final -P || rclone copy out/target/product/a10/*Alpha*.zip aosp:final -P
 }
 
@@ -138,7 +138,7 @@ tg_sendFile "build.txt"
 }
 
 upccache() {
-tg_sendText "Uploading new ccache to gdrive"
+tg_sendText "G: Uploading new ccache to gdrive"
 cd /tmp
 tar --use-compress-program="pigz -k -1 " -cf $CCACHE_NEW ccache
 rclone copy $CCACHE_NEW aosp: -P
@@ -147,7 +147,7 @@ rclone copy $CCACHE_NEW aosp: -P
 finish() {
 BUILD_END=$(date +"%s");
 DIFF=$(($BUILD_END - $BUILD_START));
-tg_sendText "All tasks completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+tg_sendText "G: All tasks completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 }
 
 # Call the functions
