@@ -55,7 +55,9 @@ git cherry-pick ef2ec82665c547bd9e6b05a45dbb2cc4fc1b06b4
 cd -
 cd frameworks/base/data/etc
 rm -f com.android.systemui.xml
-wget https://young-lake-caef.gabriel15747.workers.dev/0:/Mirror_BOT/privapp_whitelist_com.android.systemui.xml
+git clone https://github.com/Gabriel260/temp
+mv temp/privapp_whitelist_com.android.systemui.xml ./
+rm -rf temp
 chmod 0644 com.android.systemui.xml
 cd -
 
