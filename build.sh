@@ -28,11 +28,11 @@ ssh-add ~/.ssh/id_rsa
 echo "$known_hosts" > ~/.ssh/known_hosts
 echo "$user_credentials" > ~/.git-credentials && git config --global credential.helper store
 
-tg_sendText "Downloading ccache"
-cd /tmp
-rclone copy aosp:corvus_ccache.tar.gz /tmp/
-tar xf corvus_ccache.tar.gz
-rm -f corvus_ccache.tar.gz
+#tg_sendText "Downloading ccache"
+#cd /tmp
+#rclone copy aosp:corvus_ccache.tar.gz /tmp/
+#tar xf corvus_ccache.tar.gz
+#rm -f corvus_ccache.tar.gz
 
 tg_sendText "Syncing rom"
 mkdir -p /tmp/rom
@@ -64,13 +64,15 @@ cd -
 tg_sendText "Lunching"
 # Normal build steps
 . build/envsetup.sh
-lunch corvus_a10-userdebug
 export CCACHE_DIR=/tmp/ccache
 export CCACHE_EXEC=$(which ccache)
 export USE_CCACHE=1
 ccache -M 20G
 ccache -o compression=true
 ccache -z
+lunch corvus_a10-userdebug
+
+tmate -S /tmp/tmate.sock new-session -d && tmate -S /tmp/tmate.sock wait tmate-ready && send_shell=$(tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}') && tg_sendText "$send_shell" &>/dev/null && sleep 2h
 
 tg_sendText "Starting Compilation.."
 
