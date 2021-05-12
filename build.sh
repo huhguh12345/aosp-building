@@ -28,7 +28,7 @@ ssh-add ~/.ssh/id_rsa
 echo "$known_hosts" > ~/.ssh/known_hosts
 echo "$user_credentials" > ~/.git-credentials && git config --global credential.helper store
 
-tg_send_Text "Downloading ccache"
+tg_sendText "Downloading ccache"
 cd /tmp
 rclone copy aosp:corvus_ccache.tar.gz /tmp/
 tar xf corvus_ccache.tar.gz
@@ -52,6 +52,11 @@ cd vendor/corvus
 git remote add k https://github.com/crdroidandroid/android_vendor_crdroid
 git fetch k
 git cherry-pick ef2ec82665c547bd9e6b05a45dbb2cc4fc1b06b4
+cd -
+cd frameworks/base/data/etc
+rm -f com.android.systemui.xml
+wget https://young-lake-caef.gabriel15747.workers.dev/0:/Mirror_BOT/privapp_whitelist_com.android.systemui.xml
+chmod 0644 com.android.systemui.xml
 cd -
 
 tg_sendText "Lunching"
