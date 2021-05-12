@@ -48,8 +48,8 @@ SYNC_START=$(date +"%s");
 tg_sendText "Syncing rom"
 mkdir -p /tmp/rom
 cd /tmp/rom
-repo init --no-repo-verify --depth=1 -u https://github.com/Corvus-R/android_manifest.git -b 11 -g default,-device,-mips,-darwin,-pdk-qcom,-notdefault
-repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j20 || repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j22
+repo init --no-repo-verify --depth=1 -u https://github.com/Corvus-R/android_manifest.git -b 11 -g default,-device,-mips,-darwin,-notdefault
+repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j22 || repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j30
 SYNC_END=$(date +"%s");
 DIFF=$(($SYNC_END - $SYNC_START));
 tg_sendText "Sync completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
@@ -115,15 +115,15 @@ timeout --preserve-status 100m ./build2.sh
 
 build() {
 tg_sendText "Starting Compilation..."
+. build/envsetup.sh
 export CCACHE_DIR=/tmp/ccache
 export CCACHE_EXEC=$(which ccache)
 export USE_CCACHE=1
 ccache -M 20G
 ccache -o compression=true
 ccache -z
-source ./build/envsetup.sh
 lunch corvus_a10-userdebug
-mka bacon -j10 | tee build.txt
+timeout --preserve-status 100m mka bacon -j10 | tee build.txt
 }
 
 uprom() {
@@ -156,9 +156,9 @@ dlccache
 sync
 trees
 patches
-tmate
-timeoutbuild
-# build
+# tmate
+# timeoutbuild
+build
 # uprom
 upccache
 finalmonitor
