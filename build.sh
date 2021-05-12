@@ -14,8 +14,8 @@ curl -F chat_id=$CHAT_ID -F document=@${1} -F parse_mode=markdown https://api.te
 
 start() {
 BUILD_START=$(date +"%s");
-CCACHE_NAME=corvus_ccache.tar.gz
-CCACHE_NEW=ccache1.tar.gz
+CCACHE_NAME=corvus64_ccache1.tar.gz
+CCACHE_NEW=corvus64_ccache2.tar.gz
 mkdir -p ~/.config/rclone
 echo "$rclone_config" > ~/.config/rclone/rclone.conf
 mkdir -p ~/.ssh
@@ -48,7 +48,7 @@ SYNC_START=$(date +"%s");
 tg_sendText "Syncing rom"
 mkdir -p /tmp/rom
 cd /tmp/rom
-repo init --no-repo-verify --depth=1 -u https://github.com/Corvus-R/android_manifest.git -b 11 -g default,-device,-mips,-darwin,-notdefault
+repo init --no-repo-verify --depth=1 -u https://github.com/Corvus-R/android_manifest.git -b 11 -g default,-device,-mips,-darwin,-pdk-qcom,-notdefault
 repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j20 || repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j22
 SYNC_END=$(date +"%s");
 DIFF=$(($SYNC_END - $SYNC_START));
@@ -59,7 +59,7 @@ trees() {
 TREES_START=$(date +"%s");
 tg_sendText "Downloading trees"
 git clone https://github.com/Gabriel260/android_hardware_samsung-2 hardware/samsung
-git clone https://github.com/geckyn/android_kernel_samsung_exynos7885 kernel/samsung/exynos7885 --depth=1
+# git clone https://github.com/geckyn/android_kernel_samsung_exynos7885 kernel/samsung/exynos7885 --depth=1
 git clone https://github.com/eurekadevelopment/android_device_samsung -b corvus-arm64 device/samsung
 git clone https://github.com/eurekadevelopment/proprietary_vendor_samsung -b lineage-18.1-arm64 vendor/samsung
 TREES_END=$(date +"%s");
@@ -71,11 +71,11 @@ tg_sendText "trees downloaded in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) s
 patches() {
 PATCHES_START=$(date +"%s");
 tg_sendText "Applying Patches"
-cd vendor/corvus
-git remote add k https://github.com/crdroidandroid/android_vendor_crdroid
-git fetch k
-git cherry-pick ef2ec82665c547bd9e6b05a45dbb2cc4fc1b06b4
-cd -
+# cd vendor/corvus
+# git remote add k https://github.com/crdroidandroid/android_vendor_crdroid
+# git fetch k
+# git cherry-pick ef2ec82665c547bd9e6b05a45dbb2cc4fc1b06b4
+# cd -
 cd frameworks/base/data/etc
 rm -f com.android.systemui.xml
 git clone https://github.com/Gabriel260/temp
@@ -98,7 +98,7 @@ tmate() {
 tmate -S /tmp/tmate.sock new-session -d && tmate -S /tmp/tmate.sock wait tmate-ready && send_shell=$(tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}') && tg_sendText "$send_shell" &>/dev/null && sleep 2h
 }
 
-build() {
+timeoutbuild() {
 tg_sendText "Starting Compilation..."
 echo "export CCACHE_DIR=/tmp/ccache" >> build2.sh
 echo "export CCACHE_EXEC=$(which ccache)" >> build2.sh
@@ -110,7 +110,20 @@ echo "source ./build/envsetup.sh" >> build2.sh
 echo "lunch corvus_a10-userdebug" >> build2.sh
 echo "mka bacon -j10 | tee build.txt" >> build2.sh
 chmod 0777 build2.sh
-timeout --preserve-status 105m ./build2.sh
+timeout --preserve-status 100m ./build2.sh
+}
+
+build() {
+tg_sendText "Starting Compilation..."
+export CCACHE_DIR=/tmp/ccache
+export CCACHE_EXEC=$(which ccache)
+export USE_CCACHE=1
+ccache -M 20G
+ccache -o compression=true
+ccache -z
+source ./build/envsetup.sh
+lunch corvus_a10-userdebug
+mka bacon -j10 | tee build.txt
 }
 
 uprom() {
@@ -139,13 +152,14 @@ tg_sendText "All tasks completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)
 
 # Call the functions
 start
-# dlccache
+dlccache
 sync
 trees
 patches
 # tmate
-build
-uprom
+timeoutbuild
+# build
+# uprom
 upccache
 finalmonitor
 finish
