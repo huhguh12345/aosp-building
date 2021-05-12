@@ -56,7 +56,7 @@ cd -
 cd frameworks/base/data/etc
 rm -f com.android.systemui.xml
 git clone https://github.com/Gabriel260/temp
-mv temp/privapp_whitelist_com.android.systemui.xml ./
+mv temp/com.android.systemui.xml ./
 rm -rf temp
 chmod 0644 com.android.systemui.xml
 cd -
