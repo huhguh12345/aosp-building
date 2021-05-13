@@ -143,7 +143,7 @@ dlccache
 sync
 trees
 patches
-tmate
+# tmate
 # timeoutbuild
 build
 uprom
