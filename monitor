@@ -14,6 +14,7 @@ curl -F chat_id=$CHAT_ID -F document=@${1} -F parse_mode=markdown https://api.te
 
 cd /tmp/rom
 export CCACHE_DIR=/tmp/ccache
+rm -rf /tmp/ccache
 sleep 10m # We don't need those useless logs during lunching. 2 mins is better.
 
 while : # Loop to check ccache and machine status every 10 minutes
@@ -21,6 +22,14 @@ do
 (ccache -s && echo '' && free -h && echo '' && df -h) | tee monitor.txt
 tg_sendFile "monitor.txt"
 sleep 3s  # Those sleep times are included to prevent interference issues when sending messages/files to bot.
+
+if [ ! -e "/tmp/ccache" ]; then
+cd /tmp
+rclone copy aosp:corvus64_ccache1.tar.gz /tmp/ -P
+tar xf corvus64_ccache1.tar.gz
+rm corvus64_ccache1.tar.gz
+cd /tmp/rom
+fi
 
 # Save the last 25 lines of the compilation log in a file and upload to telegram.
 tail -n 25 build.txt > status.txt
