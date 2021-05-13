@@ -24,6 +24,8 @@ sleep 3s  # Those sleep times are included to prevent interference issues when s
 
 # Save the last 25 lines of the compilation log in a file and upload to telegram.
 tail -n 25 build.txt > status.txt
-tg_sendFile "status.txt"
+grep -a -m 1 -h -r "%" status.txt | head -1 > status
+STATUS="$(cat status)"
+tg_sendText "Build is at: $STATUS"
 sleep 5m
 done

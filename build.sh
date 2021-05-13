@@ -14,7 +14,7 @@ curl -F chat_id=$CHAT_ID -F document=@${1} -F parse_mode=markdown https://api.te
 
 start() {
 BUILD_START=$(date +"%s");
-CCACHE_NAME=crdroid_arm32_ccache.tar.gz
+CCACHE_NAME=corvus_arm64_ccache.tar.gz
 # CCACHE_NEW=
 mkdir -p ~/.config/rclone
 echo "$rclone_config" > ~/.config/rclone/rclone.conf
@@ -48,7 +48,7 @@ SYNC_START=$(date +"%s");
 tg_sendText "G: Syncing rom"
 mkdir -p /tmp/rom
 cd /tmp/rom
-repo init --no-repo-verify --depth=1 -u https://github.com/crdroidandroid/android.git -b 11.0 -g default,-device,-mips,-darwin,-notdefault
+repo init --no-repo-verify --depth=1 -u https://github.com/Corvus-R/android_manifest.git -b 11 -g default,-device,-mips,-darwin,-notdefault
 repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j8 || repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j22
 SYNC_END=$(date +"%s");
 DIFF=$(($SYNC_END - $SYNC_START));
@@ -60,8 +60,8 @@ TREES_START=$(date +"%s");
 tg_sendText "G: Downloading trees"
 git clone https://github.com/Gabriel260/android_hardware_samsung-2 hardware/samsung
 git clone https://github.com/geckyn/android_kernel_samsung_exynos7885 kernel/samsung/exynos7885 --depth=1
-git clone https://github.com/Gabriel260/android_device_samsung_a10-common device/samsung
-git clone https://github.com/Gabriel260/proprietary_vendor_samsung_a10-common vendor/samsung
+git clone https://github.com/eurekadevelopment/android_device_samsung -b corvus-arm64 device/samsung
+git clone https://github.com/eurekadevelopment/proprietary_vendor_samsung -b lineage-18.1-arm64 vendor/samsung
 TREES_END=$(date +"%s");
 DIFF=$(($TREES_END - $TREES_START));
 tg_sendText "G: trees downloaded in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
@@ -143,7 +143,7 @@ dlccache
 sync
 trees
 patches
-# tmate
+tmate
 # timeoutbuild
 build
 uprom
