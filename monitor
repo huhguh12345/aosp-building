@@ -14,7 +14,7 @@ curl -F chat_id=$CHAT_ID -F document=@${1} -F parse_mode=markdown https://api.te
 
 cd /tmp/rom
 export CCACHE_DIR=/tmp/ccache
-sleep 2m # We don't need those useless logs during lunching. 2 mins is better.
+sleep 10m # We don't need those useless logs during lunching. 2 mins is better.
 
 while : # Loop to check ccache and machine status every 10 minutes
 do
@@ -27,5 +27,5 @@ tail -n 25 build.txt > status.txt
 grep -a -m 1 -h -r "%" status.txt | head -1 > status
 STATUS="$(cat status)"
 tg_sendText "Build is at: $STATUS"
-sleep 5m
+sleep 2m
 done
