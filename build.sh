@@ -122,7 +122,7 @@ export USE_CCACHE=1
 ccache -M 20G
 ccache -o compression=true
 ccache -z
-lunch lineage_a10-userdebug
+lunch corvus_a10-userdebug
 mka bacon -j10 | tee build.txt
 }
 
