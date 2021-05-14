@@ -146,13 +146,13 @@ tg_sendText "G: All tasks completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 
 # Call the functions
 start
 # dlccache
-sync
-trees
-patches
+#sync
+#trees
+#patches
 tmate
 # timeoutbuild
 # build
-uprom
+#uprom
 # upccache
-finalmonitor
-finish
+#finalmonitor
+#finish
