@@ -48,7 +48,7 @@ SYNC_START=$(date +"%s");
 tg_sendText "G: Syncing rom"
 mkdir -p /tmp/rom
 cd /tmp/rom
-repo init --no-repo-verify --depth=1 -u https://github.com/Corvus-R/android_manifest.git -b 11 -g default,-device,-mips,-darwin,-notdefault
+repo init --no-repo-verify --depth=1 -u https://github.com/AOSPA/manifest -b ruby -g default,-device,-mips,-darwin,-notdefault
 repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j8 || repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j22
 SYNC_END=$(date +"%s");
 DIFF=$(($SYNC_END - $SYNC_START));
@@ -58,10 +58,10 @@ tg_sendText "G: Sync completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) 
 trees() {
 TREES_START=$(date +"%s");
 tg_sendText "G: Downloading trees"
-git clone https://github.com/Gabriel260/android_hardware_samsung-2 hardware/samsung
+git clone https://github.com/Gabriel260/android_hardware_samsung-2 -b dp hardware/samsung
 git clone https://github.com/geckyn/android_kernel_samsung_exynos7885 kernel/samsung/exynos7885 --depth=1
-git clone https://github.com/eurekadevelopment/android_device_samsung -b corvus-arm64 device/samsung
-git clone https://github.com/eurekadevelopment/proprietary_vendor_samsung -b lineage-18.1-arm64 vendor/samsung
+git clone https://github.com/Gabriel260/android_device_samsung_a10-common -b pa device/samsung
+git clone https://github.com/Gabriel260/proprietary_vendor_samsung_a10-common vendor/samsung
 TREES_END=$(date +"%s");
 DIFF=$(($TREES_END - $TREES_START));
 tg_sendText "G: trees downloaded in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
@@ -71,24 +71,17 @@ tg_sendText "G: trees downloaded in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)
 patches() {
 PATCHES_START=$(date +"%s");
 tg_sendText "G: Applying Patches"
-cd vendor/corvus
-git remote add k https://github.com/crdroidandroid/android_vendor_crdroid
-git fetch k
-git cherry-pick ef2ec82665c547bd9e6b05a45dbb2cc4fc1b06b4
-cd -
-cd frameworks/base/data/etc
-rm -f com.android.systemui.xml
-git clone https://github.com/Gabriel260/temp
-mv temp/com.android.systemui.xml ./ 
-rm -rf temp
-chmod 0644 com.android.systemui.xml
-cd -
 cd vendor
-rm -rf themes
-git clone https://github.com/Gabriel260/android_vendor_themes themes --depth=1
+rm -rf pa
+git clone https://github.com/Gabriel260/android_vendor_pa pa --depth=1
+cd ..
+cd vendor/qcom/build/tasks
+rm -f kernel_definitions.mk
+git clone https://github.com/Gabriel260/temp
+mv temp/kernel_definitions.mk ./
+chmod 0644 kernel_definitions.mk
+rm -rf temp
 cd -
-rm -rf packages/inputmethods/LatinIME
-git clone https://github.com/LineageOS/android_packages_inputmethods_LatinIME packages/inputmethods/LatinIME --depth=1
 PATCHES_END=$(date +"%s");
 DIFF=$(($PATCHES_END - $PATCHES_START));
 tg_sendText "G: patches applied in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
@@ -156,9 +149,9 @@ start
 sync
 trees
 patches
-# tmate
+tmate
 # timeoutbuild
-build
+# build
 uprom
 # upccache
 finalmonitor
