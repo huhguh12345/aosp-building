@@ -57,7 +57,7 @@ tg_sendText "G: Sync completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) 
 
 trees() {
 TREES_START=$(date +"%s");
-tg_sendText "G: Downloading trees"
+tg_sendText "GG: Downloading trees"
 git clone https://github.com/Gabriel260/android_hardware_samsung-2 -b dp hardware/samsung
 git clone https://github.com/geckyn/android_kernel_samsung_exynos7885 kernel/samsung/exynos7885 --depth=1
 git clone https://github.com/Gabriel260/android_device_samsung_a10-common -b pa device/samsung
